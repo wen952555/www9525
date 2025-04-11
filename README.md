@@ -1,21 +1,10 @@
 # VPN Service
 
-## 项目简介
-这是一个简单的 Flask 应用，提供以下功能：
+## 简介
+这是一个简单的 Flask 应用程序，用于测试部署到 Render 平台。它提供以下基本功能：
 - 用户登录认证
 - 流量统计
 - 管理面板
-
-适合部署到 Render 平台。
-
-## 功能模块
-1. **用户管理**
-   - 登录认证
-2. **流量管理**
-   - 流量统计
-3. **管理面板**
-   - 活跃用户统计
-   - 服务负载监控
 
 ## 本地运行步骤
 
@@ -70,7 +59,6 @@ git push -u origin main
 在 Render 的 **Environment Variables** 设置中添加以下变量：
 - `SECRET_KEY`：用于加密的密钥（例如 `your_secret_key`）。
 - `DEBUG`：设置为 `False` 禁用调试模式。
-- `DATABASE_URI`：设置为数据库连接字符串。
 
 访问 Render 提供的公共 URL，例如：
 ```
@@ -78,6 +66,7 @@ https://vpn-service.onrender.com
 ```
 
 ## 示例 API 路由
+- `GET /`：显示服务状态
 - `POST /auth/login`：用户登录
 - `GET /traffic/stats`：获取流量统计信息
 - `GET /admin/dashboard`：查看管理面板数据

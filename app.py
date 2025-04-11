@@ -6,12 +6,10 @@ app = Flask(__name__)
 # 加载配置
 app.config.from_object('config.Config')
 
-# 提供 favicon.ico 支持，避免 404 错误
-@app.route('/favicon.ico')
-def favicon():
-    return app.send_static_file('favicon.ico')
+@app.route('/')
+def home():
+    return "VPN Service is running!"
 
-# 用户认证相关路由
 @app.route('/auth/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -24,10 +22,8 @@ def login():
     else:
         return jsonify({"message": "Invalid username or password"}), 401
 
-# 流量统计相关路由
 @app.route('/traffic/stats', methods=['GET'])
 def traffic_stats():
-    # 示例流量数据
     stats = {
         "total_traffic": "120GB",
         "used_traffic": "50GB",
@@ -35,10 +31,8 @@ def traffic_stats():
     }
     return jsonify(stats)
 
-# 管理面板相关路由
 @app.route('/admin/dashboard', methods=['GET'])
 def admin_dashboard():
-    # 示例管理数据
     data = {
         "active_users": 120,
         "online_users": 45,
@@ -46,10 +40,7 @@ def admin_dashboard():
     }
     return jsonify(data)
 
-# 主函数入口
 if __name__ == "__main__":
     # Render 平台会自动设置 PORT 环境变量
-    port = os.environ.get("PORT")
-    if port is None or not port.isdigit():
-        port = 5000  # 默认端口
+    port = os.getenv("PORT", "5000")  # 提供默认值 5000
     app.run(host="0.0.0.0", port=int(port))
