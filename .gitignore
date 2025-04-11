@@ -1,10 +1,6 @@
-.idea/*
-venv/*
-env/*
-**/__pycache__
+# Ignore unnecessary files and directories
 .env
-**/*.log*
-**/*.json
-**/test*
-**/chats
-**/Makefile
+*.sqlite3
+__pycache__/
+*.pyc
+.DS_Store
