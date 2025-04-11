@@ -49,5 +49,7 @@ def admin_dashboard():
 # 主函数入口
 if __name__ == "__main__":
     # Render 平台会自动设置 PORT 环境变量
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    port = os.environ.get("PORT")
+    if port is None or not port.isdigit():
+        port = 5000  # 默认端口
+    app.run(host="0.0.0.0", port=int(port))
