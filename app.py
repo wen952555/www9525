@@ -1,48 +1,51 @@
-from flask import Flask, request, jsonify
-from admin.admin import AdminManager
-from user.auth import login
-from user.restriction import is_user_restricted, restrict_user, unrestrict_user
+import os
+from flask import Flask, jsonify, request
 
+# 创建 Flask 应用
 app = Flask(__name__)
+app.config.from_object('config.Config')  # 加载配置
 
-# Initialize admin manager
-admin_manager = AdminManager()
+# 提供 favicon.ico 支持，避免 404 错误
+@app.route('/favicon.ico')
+def favicon():
+    return app.send_static_file('favicon.ico')
 
-@app.route("/")
-def home():
-    return "Welcome to the VPN Service Bot!"
+# 用户认证相关路由
+@app.route('/auth/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
 
-@app.route("/user/login", methods=["POST"])
-def user_login():
-    user_id = request.json.get("user_id")
-    if is_user_restricted(user_id):
-        return jsonify({"error": "You are restricted from accessing this bot."}), 403
-    return login(user_id)
+    # 简单用户校验逻辑
+    if username == "admin" and password == "password":
+        return jsonify({"message": "Login successful", "token": "example_token"}), 200
+    else:
+        return jsonify({"message": "Invalid username or password"}), 401
 
-@app.route("/admin/restrict", methods=["POST"])
-def admin_restrict_user():
-    admin_id = request.json.get("admin_id")
-    user_id = request.json.get("user_id")
-    if not admin_manager.is_admin(admin_id):
-        return jsonify({"error": "Unauthorized access."}), 403
-    restrict_user(user_id)
-    return jsonify({"message": f"User {user_id} has been restricted."})
+# 流量统计相关路由
+@app.route('/traffic/stats', methods=['GET'])
+def get_stats():
+    # 示例流量数据
+    stats = {
+        "total_traffic": "120GB",
+        "used_traffic": "50GB",
+        "remaining_traffic": "70GB"
+    }
+    return jsonify(stats)
 
-@app.route("/admin/unrestrict", methods=["POST"])
-def admin_unrestrict_user():
-    admin_id = request.json.get("admin_id")
-    user_id = request.json.get("user_id")
-    if not admin_manager.is_admin(admin_id):
-        return jsonify({"error": "Unauthorized access."}), 403
-    unrestrict_user(user_id)
-    return jsonify({"message": f"User {user_id} has been unrestricted."})
+# 管理面板相关路由
+@app.route('/admin/dashboard', methods=['GET'])
+def dashboard():
+    # 示例管理数据
+    data = {
+        "active_users": 120,
+        "online_users": 45,
+        "server_load": "30%"
+    }
+    return jsonify(data)
 
-@app.route("/admin/list_restricted", methods=["GET"])
-def admin_list_restricted_users():
-    admin_id = request.args.get("admin_id")
-    if not admin_manager.is_admin(admin_id):
-        return jsonify({"error": "Unauthorized access."}), 403
-    return jsonify({"restricted_users": admin_manager.list_restricted_users()})
-
+# 主函数入口
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    port = int(os.environ.get("PORT", 5000))  # Render 使用的端口
+    app.run(host="0.0.0.0", port=port)
