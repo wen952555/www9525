@@ -16,5 +16,5 @@ COPY . .
 # 暴露端口
 EXPOSE 5000
 
-# 使用 Gunicorn 启动服务
+# 使用 Gunicorn 作为生产环境的 WSGI 服务器
 CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:$PORT", "app:app"]
