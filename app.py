@@ -3,9 +3,6 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-# 加载配置
-app.config.from_object('config.Config')
-
 @app.route('/')
 def home():
     return "VPN Service is running!"
@@ -43,4 +40,8 @@ def admin_dashboard():
 if __name__ == "__main__":
     # Render 平台会自动设置 PORT 环境变量
     port = os.getenv("PORT", "5000")  # 提供默认值 5000
-    app.run(host="0.0.0.0", port=int(port))
+    try:
+        port = int(port)
+    except ValueError:
+        raise ValueError(f"Invalid port number: {port}. Ensure that the PORT environment variable is set correctly.")
+    app.run(host="0.0.0.0", port=port)
