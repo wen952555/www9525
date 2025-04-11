@@ -1,26 +1,35 @@
+from flask import Flask
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+import threading
+import os
 
-# 定义 /start 命令的处理函数
+# Flask Web Server
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "Telegram Bot is running!"
+
+# Telegram Bot Handlers
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(f"Hello, {update.effective_user.first_name}!")
 
-# 定义 /help 命令的处理函数
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text("This is a simple Telegram bot. Use /start to begin!")
 
+def run_telegram_bot():
+    TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")  # 从环境变量获取 Token
+    app_builder = ApplicationBuilder().token(TOKEN).build()
+    app_builder.add_handler(CommandHandler("start", start))
+    app_builder.add_handler(CommandHandler("help", help_command))
+    print("Telegram Bot is running...")
+    app_builder.run_polling()
+
+# 启动 Telegram Bot 和 Flask 服务
 if __name__ == "__main__":
-    # 从环境变量中读取 Telegram Bot Token
-    import os
-    TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-
-    # 初始化应用程序
-    app = ApplicationBuilder().token(TOKEN).build()
-
-    # 添加命令处理器
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("help", help_command))
-
-    # 启动应用程序
-    print("Bot is running...")
-    app.run_polling()
+    # 在新线程中运行 Telegram Bot
+    threading.Thread(target=run_telegram_bot).start()
+    # 启动 Flask Web 服务（监听 Render 平台要求的端口）
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)

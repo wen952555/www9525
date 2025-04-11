@@ -11,8 +11,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 复制代码文件
 COPY . .
 
-# 设置环境变量（可选）
-# ENV TELEGRAM_BOT_TOKEN="<YOUR_BOT_TOKEN>"
-
 # 定义容器启动时的入口命令
 CMD ["python", "bot.py"]
