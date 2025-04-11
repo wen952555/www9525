@@ -3,6 +3,7 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 import threading
 import os
+import asyncio
 
 # Flask Web Server
 app = Flask(__name__)
@@ -23,6 +24,9 @@ def run_telegram_bot():
     app_builder = ApplicationBuilder().token(TOKEN).build()
     app_builder.add_handler(CommandHandler("start", start))
     app_builder.add_handler(CommandHandler("help", help_command))
+
+    # 创建并设置 asyncio 事件循环
+    asyncio.set_event_loop(asyncio.new_event_loop())
     print("Telegram Bot is running...")
     app_builder.run_polling()
 
