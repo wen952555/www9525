@@ -1,6 +1,0 @@
-# Ignore unnecessary files and directories
-.env
-*.sqlite3
-__pycache__/
-*.pyc
-.DS_Store
