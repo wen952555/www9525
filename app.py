@@ -6,7 +6,7 @@ app = Flask(__name__)
 # 加载配置
 app.config.from_object('config.Config')
 
-# 提供 favicon.ico 以避免 404 错误
+# 提供 favicon.ico 支持，避免 404 错误
 @app.route('/favicon.ico')
 def favicon():
     return app.send_static_file('favicon.ico')

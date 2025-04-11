@@ -1,4 +1,4 @@
-# 使用官方 Python 基础镜像
+# 使用官方 Python Slim 镜像
 FROM python:3.11-slim
 
 # 设置工作目录
@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 复制项目文件
 COPY . .
 
-# 暴露端口
+# 暴露端口（Render 平台会自动设置 $PORT）
 EXPOSE 5000
 
 # 使用 Gunicorn 作为生产环境的 WSGI 服务器
